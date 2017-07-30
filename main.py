@@ -22,7 +22,7 @@ def delta_positive(a, b, delta, c):
     print ("x2 =", x2)
 
 def delta_negative(b, delta, a):
-    print("Le discriminant est negative")
+    print("Le discriminant est negatif")
     print("Δ < 0 alors l'équation ne possède pas de solution réelle mais admet 2 solutions complexes x1 et x2")
     print("x1 = (−", b, "− i√(", -delta,") ) / (", 2 * a,") et x2 = (−", b,"+ i√(", -delta,") ) / (", 2 * a,")")
 
@@ -54,24 +54,22 @@ def calc_second_degrees(a, b, c):
 
 def reduced_form(tab, exp):
     index = 0
+    nb = 0
     s = "Forme Réduite: "
-    for i in tab:
-        if i != 0:
-            if index > 0 and index < len(tab):
-                if i > 0:
-                    s += " + "
-                else:
-                    s += " - "
-                i = abs(i)
-            s += str(i)
-            s += " * X ^ "
-            s += str(index)
-        else:
-            if max(tab) == 0:
-                s += "0"
+    for i in exp:
+        nb = tab[i]
+        if index > 0:
+            if tab[i] > 0 :
+                s += " + "
+            else:
+                s += " - "
+            nb = abs(tab[i])
+        s += str(nb)
+        s += "* X ^ "
+        s += str(i)
         index += 1
     s += (" = 0\n")
-    print((s))
+    print(s)
 
 def calc_by_degrees(exp, nb):
     tab = [0] * (abs(min(exp)) + max(exp) + 1)
@@ -81,7 +79,7 @@ def calc_by_degrees(exp, nb):
         tab[exo] += nb[i]
         i += 1
     if (min(nb) != 0 and max(nb) != 0):
-        print(reduced_form(tab, exp))
+        reduced_form(tab, exp)
     else:
         print("Reduced form: 0 = 0")
     if isInt == 1:
@@ -104,9 +102,7 @@ def handle_param(befExp, befNb, aftExp, aftNb):
     exp = []
     nb = []
     pb = 0
-    print (befExp)
-    print (befNb)
-    if len(befExp) > 0 and len(befNb) > 0 :
+    if len(befExp) > 0 and len(befNb) > 0 or len(aftExp) > 0 and len(aftNb) > 0:
         for bexp in befExp:
             if bexp.replace(" ", "").find(".") == -1:
                 exp.append(int(bexp.replace(" ", "")))
@@ -126,8 +122,10 @@ def handle_param(befExp, befNb, aftExp, aftNb):
                 nb.append(float(bnb.replace(" ", "")))
             for anb in aftNb:
                 nb.append(-float(anb.replace(" ", "")))
-            calc_by_degrees(exp, nb)
-
+            if min(exp) >= 0:
+                calc_by_degrees(exp, nb)
+            else:
+                print("Progromme ne gere pas les exposants negatifs")
 def main(argv):
     if len(argv) > 1:
         befEqu = re.search('(.)+(?=\=)', argv[1])
@@ -139,24 +137,27 @@ def main(argv):
         if len(befExp) == len(befNb) and len(aftExp) == len(aftNb):
             handle_param(befExp, befNb, aftExp, aftNb)
         else:
+            print (len(befExp) == len(befNb))
+            print (len(aftExp) == len(aftNb))
             print(("Problème d'exposants"))
     else:
         for line in sys.stdin:
-            print (line)
-            befEqu = re.search('(.)+(?=\=)', line)
-            aftEqu = re.search('(?<=\=)((.)+)', line)
-            if befEqu and aftEqu:
-                befExp = re.findall('(?<=\^)(\s?[-+]*\d*)+', befEqu.group(0))
-                aftExp = re.findall('(?<=\^)(\s?[-+]*\d*)+', aftEqu.group(0))
-                befNb = re.findall('([+-]?\s*\d.?\d?)+(?=\s*\*)', befEqu.group(0))
-                aftNb = re.findall('([+-]?\d.?\d?)+(?=\s*\*)', aftEqu.group(0))
-                print ("befExp", befEqu.group(0), befExp)
-                if len(befExp) == len(befNb) and len(aftExp) == len(aftNb):
-                    handle_param(befExp, befNb, aftExp, aftNb)
+            if len(line) > 0:
+                befEqu = re.search('(.)+(?=\=)', line)
+                aftEqu = re.search('(?<=\=)((.)+)', line)
+                if befEqu and aftEqu:
+                    befExp = re.findall('(?<=\^)(\s?[-+]*\d\.?\d*)+', befEqu.group(0))
+                    aftExp = re.findall('(?<=\^)(\s?[-+]*\d\.?\d*)+', aftEqu.group(0))
+                    befNb = re.findall('([+-]?\s*\d.?\d?)+(?=\s*\*)', befEqu.group(0))
+                    aftNb = re.findall('([+-]?\d.?\d?)+(?=\s*\*)', aftEqu.group(0))
+                    if len(befExp) == len(befNb) and len(aftExp) == len(aftNb):
+                        handle_param(befExp, befNb, aftExp, aftNb)
+                    else:
+                        print(("Problème d'exposants"))
                 else:
-                    print(("Problème d'exposants"))
+                    print ("Ceci n'est pas une equation")
             else:
-                print(("Ceci n'est pas une equation"))
+                print ("Ceci n'est pas une equation")
 
 
 if __name__ == "__main__":
