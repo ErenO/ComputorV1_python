@@ -17,34 +17,34 @@ def delta_positive(a, b, delta, c):
     else:
         x1 = 0
         x2 = 0
-    print "Le discriminant est strictement positif. Les deux solutions sont :"
-    print "x1 =", x1 #.as_integer_ratio()))
-    print "x2 =", x2
+    print("Le discriminant est strictement positif. Les deux solutions sont :")
+    print ("x1 =", x1) #.as_integer_ratio())))
+    print ("x2 =", x2)
 
 def delta_negative(b, delta, a):
-    print "Le discriminant est negative"
-    print "Δ < 0 alors l'équation ne possède pas de solution réelle mais admet 2 solutions complexes x1 et x2"
-    print "x1 = (−", b, "− i√(", -delta,") ) / (", 2 * a,") et x2 = (−", b,"+ i√(", -delta,") ) / (", 2 * a,")"
+    print("Le discriminant est negative")
+    print("Δ < 0 alors l'équation ne possède pas de solution réelle mais admet 2 solutions complexes x1 et x2")
+    print("x1 = (−", b, "− i√(", -delta,") ) / (", 2 * a,") et x2 = (−", b,"+ i√(", -delta,") ) / (", 2 * a,")")
 
 def delta_zero(a, b):
-    print "Le discriminant est égal à zero. La solution est :"
+    print("Le discriminant est égal à zero. La solution est :")
     x0 = 0
     if a != 0:
         x0 = (-b) / (2 * a)
     else:
-        print "On peut pas diviser par zero"
-    print "x =", x0
+        print("On peut pas diviser par zero")
+    print("x =", x0)
 
 def calc_first_degrees(zero, one):
-    print "Polynomial degree: 1"
+    print("Polynomial degree: 1")
     result = (-zero) / one
-    print "Il y a une solution:"
-    print "x =", result
+    print("Il y a une solution:")
+    print("x =", result)
 
 def calc_second_degrees(a, b, c):
     delta = abs(b * b) - (4 * a * c)
-    print "Polynomial degree: 2"
-    print "delta =", delta
+    print("Polynomial degree: 2")
+    print("delta =", delta)
     if delta > 0:
         delta_positive(a, b, delta, c)
     elif delta == 0:
@@ -52,7 +52,7 @@ def calc_second_degrees(a, b, c):
     elif delta < 0:
         delta_negative(b, delta, a)
 
-def print_reduced_form(tab, exp):
+def reduced_form(tab, exp):
     index = 0
     s = "Forme Réduite: "
     for i in tab:
@@ -71,7 +71,7 @@ def print_reduced_form(tab, exp):
                 s += "0"
         index += 1
     s += (" = 0\n")
-    print (s)
+    print((s))
 
 def calc_by_degrees(exp, nb):
     tab = [0] * (abs(min(exp)) + max(exp) + 1)
@@ -81,53 +81,52 @@ def calc_by_degrees(exp, nb):
         tab[exo] += nb[i]
         i += 1
     if (min(nb) != 0 and max(nb) != 0):
-        print_reduced_form(tab, exp)
+        print(reduced_form(tab, exp))
     else:
-        print "Reduced form: 0 = 0"
+        print("Reduced form: 0 = 0")
     if isInt == 1:
-        print "Le programme ne gère pas les exposants non entiers"
+        print("Le programme ne gère pas les exposants non entiers")
     elif max(exp) == 2 and tab[2] != 0:
         calc_second_degrees(tab[2], tab[1], tab[0])
     elif max(exp) == 1 and tab[1] != 0:
         calc_first_degrees(tab[0], tab[1])
     elif max(exp) == 0 and tab[0] == 0:
-        print "Tous les nombres réels sont solution"
+        print("Tous les nombres réels sont solution")
     elif max(exp) == 0 and tab[0] != 0:
-        print "Équation impossible à résoudre"
+        print("Équation impossible à résoudre")
     elif min(nb) == 0 and max(nb) == 0:
-        print "Tous les nombres réels sont solution"
+        print("Tous les nombres réels sont solution")
     else:
-        print "L'equation est supérieur à un degrée 2, il est de degree", max(exp)
-
-def print_sup_deg(a):
-    print "L'equation est supérieur à un degrée 2, il est de degree", a
-    sys.exit(0)
+        print("L'equation est supérieur à un degrée 2, il est de degree", max(exp))
 
 def handle_param(befExp, befNb, aftExp, aftNb):
     i = 0
     exp = []
     nb = []
     pb = 0
-    for bexp in befExp:
-        if bexp.replace(" ", "").find(".") == -1:
-            exp.append(int(bexp.replace(" ", "")))
-        else:
-            if pb == 0:
-                print "Problème d'exposants"
-                pb = 1
-    for aexp in aftExp:
-        if aexp.replace(" ", "").find(".") == -1:
-            exp.append(int(aexp.replace(" ", "")))
-        else:
-            if pb == 0:
-                print "Problème d'exposants"
-                pb = 1
-    if pb == 0:
-        for bnb in befNb:
-            nb.append(float(bnb.replace(" ", "")))
-        for anb in aftNb:
-            nb.append(-float(anb.replace(" ", "")))
-        calc_by_degrees(exp, nb)
+    print (befExp)
+    print (befNb)
+    if len(befExp) > 0 and len(befNb) > 0 :
+        for bexp in befExp:
+            if bexp.replace(" ", "").find(".") == -1:
+                exp.append(int(bexp.replace(" ", "")))
+            else:
+                if pb == 0:
+                    print("Problème d'exposants")
+                    pb = 1
+        for aexp in aftExp:
+            if aexp.replace(" ", "").find(".") == -1:
+                exp.append(int(aexp.replace(" ", "")))
+            else:
+                if pb == 0:
+                    print("Problème d'exposants")
+                    pb = 1
+        if pb == 0:
+            for bnb in befNb:
+                nb.append(float(bnb.replace(" ", "")))
+            for anb in aftNb:
+                nb.append(-float(anb.replace(" ", "")))
+            calc_by_degrees(exp, nb)
 
 def main(argv):
     if len(argv) > 1:
@@ -140,9 +139,10 @@ def main(argv):
         if len(befExp) == len(befNb) and len(aftExp) == len(aftNb):
             handle_param(befExp, befNb, aftExp, aftNb)
         else:
-            print ("Problème d'exposants")
+            print(("Problème d'exposants"))
     else:
         for line in sys.stdin:
+            print (line)
             befEqu = re.search('(.)+(?=\=)', line)
             aftEqu = re.search('(?<=\=)((.)+)', line)
             if befEqu and aftEqu:
@@ -150,12 +150,13 @@ def main(argv):
                 aftExp = re.findall('(?<=\^)(\s?[-+]*\d*)+', aftEqu.group(0))
                 befNb = re.findall('([+-]?\s*\d.?\d?)+(?=\s*\*)', befEqu.group(0))
                 aftNb = re.findall('([+-]?\d.?\d?)+(?=\s*\*)', aftEqu.group(0))
+                print ("befExp", befEqu.group(0), befExp)
                 if len(befExp) == len(befNb) and len(aftExp) == len(aftNb):
                     handle_param(befExp, befNb, aftExp, aftNb)
                 else:
-                    print ("Problème d'exposants")
+                    print(("Problème d'exposants"))
             else:
-                print ("Ceci n'est pas une equation")
+                print(("Ceci n'est pas une equation"))
 
 
 if __name__ == "__main__":
