@@ -33,7 +33,7 @@ def delta_zero(a, b):
         x0 = (-b) / (2 * a)
     else:
         print "On peut pas diviser par zero"
-    print("x =", x0)
+    print "x =", x0
 
 def calc_first_degrees(zero, one):
     print "Polynomial degree: 1"
@@ -55,19 +55,25 @@ def calc_second_degrees(a, b, c):
 def reduced_form(tab, exp):
     index = 0
     nb = 0
+    print tab
+    print exp
     s = "Forme Réduite: "
-    for i in exp:
-        nb = tab[i]
-        if index > 0:
-            if tab[i] > 0 :
-                s += " + "
-            else:
-                s += " - "
-            nb = abs(tab[i])
-        s += str(nb)
-        s += "* X ^ "
-        s += str(i)
-        index += 1
+    if (min(tab) != 0 and max(tab) != 0):
+        for i in exp:
+            if tab[i] != 0:
+                nb = tab[i]
+                if index > 0:
+                    if tab[i] > 0 :
+                        s += " + "
+                    else:
+                        s += " - "
+                    nb = abs(tab[i])
+                s += str(nb)
+                s += "* X ^ "
+                s += str(i)
+                index += 1
+    else:
+        s += "0"
     s += (" = 0\n")
     print(s)
 
@@ -78,22 +84,23 @@ def calc_by_degrees(exp, nb):
     for exo in exp:
         tab[exo] += nb[i]
         i += 1
+    print nb
     if (min(nb) != 0 and max(nb) != 0):
         reduced_form(tab, exp)
     else:
         print "Reduced form: 0 = 0"
     if isInt == 1:
         print "Le programme ne gère pas les exposants non entiers"
-    elif max(exp) == 2 and tab[2] != 0:
-        calc_second_degrees(tab[2], tab[1], tab[0])
-    elif max(exp) == 1 and tab[1] != 0:
-        calc_first_degrees(tab[0], tab[1])
     elif max(exp) == 0 and tab[0] == 0:
         print "Tous les nombres réels sont solution"
     elif max(exp) == 0 and tab[0] != 0:
         print "Équation impossible à résoudre"
     elif min(nb) == 0 and max(nb) == 0:
         print "Tous les nombres réels sont solution"
+    elif max(exp) == 2 and tab[2] != 0:
+        calc_second_degrees(tab[2], tab[1], tab[0])
+    elif max(exp) == 1 and tab[1] != 0:
+        calc_first_degrees(tab[0], tab[1])
     else:
         print "L'equation est supérieur à un degrée 2, il est de degree", max(exp)
 
