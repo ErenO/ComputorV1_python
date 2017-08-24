@@ -52,6 +52,7 @@ def calc_first_degrees(zero, one):
     result = (-zero) / one
     sys.stdout.write(BLUE)
     print "Il y a une solution:"
+    sys.stdout.write(RED)
     print "x =", result
     sys.stdout.write(RESET)
 
@@ -72,6 +73,7 @@ def calc_second_degrees(a, b, c):
 def reduced_form(tab, exp):
     index = 0
     sys.stdout.write(BLUE)
+    nb = 0
     s = "Forme Réduite: "
     for i in tab:
         if i != 0:
@@ -80,10 +82,14 @@ def reduced_form(tab, exp):
                     s += " + "
                 else:
                     s += " - "
+                if i > nb:
+                    nb = i
                 i = abs(i)
             s += str(i)
             s += " * X ^ "
             s += str(index)
+            if index > nb:
+                nb = index
         else:
             if max(tab) == 0:
                 s += "0"
@@ -91,30 +97,32 @@ def reduced_form(tab, exp):
     s += (" = 0\n")
     print (s)
     sys.stdout.write(RESET)
+    return nb
 
 def calc_by_degrees(exp, nb):
     tab = [0] * (abs(min(exp)) + max(exp) + 1)
     i = 0
     isInt = 0
+    maxExp = 0
     for exo in exp:
         tab[exo] += nb[i]
         i += 1
     if (min(nb) != 0 and max(nb) != 0):
-        reduced_form(tab, exp)
+        maxExp = reduced_form(tab, exp)
     else:
         print "Reduced form: 0 = 0"
     sys.stdout.write(GREEN)
     if isInt == 1:
         print "Le programme ne gère pas les exposants non entiers"
-    elif max(exp) == 0 and tab[0] == 0:
+    elif maxExp == 0 and tab[0] == 0:
         print "Tous les nombres réels sont solution"
-    elif max(exp) == 0 and tab[0] != 0:
+    elif maxExp == 0 and tab[0] != 0:
         print "Équation impossible à résoudre"
     elif min(nb) == 0 and max(nb) == 0:
         print "Tous les nombres réels sont solution"
-    elif max(exp) == 2 and tab[2] != 0:
+    elif maxExp == 2 and tab[2] != 0:
         calc_second_degrees(tab[2], tab[1], tab[0])
-    elif max(exp) == 1 and tab[1] != 0:
+    elif maxExp == 1 and tab[1] != 0:
         calc_first_degrees(tab[0], tab[1])
     else:
         print "L'equation est supérieur à un degrée 2, il est de degree", max(exp)
@@ -126,52 +134,63 @@ def handle_param(befExp, befNb, aftExp, aftNb):
     nb = []
     pb = 0
     expNb = 0
+    sys.stdout.write(GREEN)
     if len(befExp) > 0 and len(befNb) > 0 or len(aftExp) > 0 and len(aftNb) > 0:
         for bexp in befExp:
-            if bexp.replace(" ", "").find(".") == -1:
-                expNb = int(bexp.replace(" ", ""))
+            if bexp.find(".") == -1:
+                expNb = int(bexp)
                 if expNb > 10000:
-                    print "Problème d'exposants"
+                    print "Problème d'exposants1"
                     pb = 1
                 else:
                     exp.append(expNb)
             else:
                 if pb == 0:
-                    print "Problème d'exposants"
+                    print "Problème d'exposants2"
                     pb = 1
         for aexp in aftExp:
-            if aexp.replace(" ", "").find(".") == -1:
-                expNb = int(aexp.replace(" ", ""))
+            if aexp.find(".") == -1:
+                expNb = int(aexp)
                 if expNb > 10000:
-                    print "Problème d'exposants"
+                    print "Problème d'exposants3"
                     pb = 1
                 else:
                     exp.append(expNb)
             else:
                 if pb == 0:
-                    print "Problème d'exposants"
+                    print "Problème d'exposants4"
                     pb = 1
         if pb == 0:
+            print "befNb", befNb
             for bnb in befNb:
-                nb.append(float(bnb.replace(" ", "")))
+                nb.append(float(bnb))
             for anb in aftNb:
-                nb.append(-float(anb.replace(" ", "")))
+                nb.append(-float(anb))
+            print "aftNb", aftNb
             if min(exp) >= 0:
+                print "exp", exp, "nb", nb
                 calc_by_degrees(exp, nb)
             else:
                 print "Programme ne gere pas les exposants negatifs"
+    else:
+        print "Problème pas de nombres"
+    sys.stdout.write(RESET)
+
 def main(argv):
+    sys.stdout.write(GREEN)
     if len(argv) > 1:
-        befEqu = re.search('(.)+(?=\=)', argv[1])
-        aftEqu = re.search('(?<=\=)((.)+)', argv[1])
-        befExp = re.findall('(?<=\^)(\s?[-+]*\d\.?\d*)+', befEqu.group(0))
-        aftExp = re.findall('(?<=\^)(\s?[-+]*\d\.?\d*)+', aftEqu.group(0))
-        befNb = re.findall('([+-]?\s*\d.?\d?)+(?=\s*\*)', befEqu.group(0))
-        aftNb = re.findall('([+-]?\d.?\d?)+(?=\s*\*)', aftEqu.group(0))
+        equation = argv[1].replace(" ", "")
+        befEqu = re.search('(.)+(?=\=)', equation)
+        aftEqu = re.search('(?<=\=)((.)+)', equation)
+        befExp = re.findall('(?<=\^)([+-]?\d\.?\d?)', befEqu.group(0))
+        aftExp = re.findall('(?<=\^)([+-]?\d\.?\d?)', aftEqu.group(0))
+        befNb = re.findall('([+-]?\d+\.?\d*)(?=\s*\*)', befEqu.group(0))
+        aftNb = re.findall('([+-]?\d+\.?\d*)(?=\s*\*)', aftEqu.group(0))
+        print "befNb", befNb, "befExp", befExp, "aftNb", aftNb, "aftExp", aftExp
         if len(befExp) == len(befNb) and len(aftExp) == len(aftNb):
             handle_param(befExp, befNb, aftExp, aftNb)
         else:
-            print "Problème d'exposants"
+            print "Problème d'exposants5"
     else:
         line = sys.stdin.readline()
         while line:
@@ -179,10 +198,10 @@ def main(argv):
                 befEqu = re.search('(.)+(?=\=)', line)
                 aftEqu = re.search('(?<=\=)((.)+)', line)
                 if befEqu and aftEqu:
-                    befExp = re.findall('(?<=\^)(\s?[-+]*\d\.?\d*)+', befEqu.group(0))
-                    aftExp = re.findall('(?<=\^)(\s?[-+]*\d\.?\d*)+', aftEqu.group(0))
-                    befNb = re.findall('([+-]?\s*\d.?\d?)+(?=\s*\*)', befEqu.group(0))
-                    aftNb = re.findall('([+-]?\d.?\d?)+(?=\s*\*)', aftEqu.group(0))
+                    befExp = re.findall('(?<=\^)([+-]?\d\.?\d?)', befEqu.group(0))
+                    aftExp = re.findall('(?<=\^)([+-]?\d\.?\d?)', aftEqu.group(0))
+                    befNb = re.findall('([+-]?\d+\.?\d+)(?=\s*\*)', befEqu.group(0))
+                    aftNb = re.findall('([+-]?\d+\.?\d+)(?=\s*\*)', aftEqu.group(0))
                     if len(befExp) == len(befNb) and len(aftExp) == len(aftNb):
                         handle_param(befExp, befNb, aftExp, aftNb)
                     else:
@@ -192,6 +211,7 @@ def main(argv):
             else:
                 print "Ceci n'est pas une equation"
             line = sys.stdin.readline()
+    sys.stdout.write(RESET)
 
 if __name__ == "__main__":
     main(sys.argv)
