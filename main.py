@@ -9,22 +9,6 @@ import collections
 # pour les exposants (?<=\^)((\d)+)
 # pour le coeff (\d)+(?=\s\*)
 
-# double square_root(double num)
-# {
-#   double x1;
-#   double x2;
-#
-#   x1 = (num * 1.0) / 2;
-#   x2 = (x1 + (num / x1)) / 2;
-#   while (ABS(x1 - x2) >= 0.0000001)
-#   {
-#     x1 = x2;
-#     x2 = (x1 + (num / x1)) / 2;
-#   }
-#   return (x2);
-# }
-
-
 def sqrt(num):
     x1 = (num * 1.0) / 2
     x2 = (x1 + (num / x1)) / 2
@@ -55,7 +39,12 @@ def delta_negative(b, delta, a):
     sys.stdout.write(BLUE)
     print "Δ < 0 alors l'équation ne possède pas de solution réelle mais admet 2 solutions complexes x1 et x2"
     sys.stdout.write(RED)
-    print "x1 = (−", b, "− i√(", -delta,") ) / (", 2 * a,") et x2 = (−", b,"+ i√(", -delta,") ) / (", 2 * a,")"
+    print "x1 = (", -b, "− i√(", -delta,") ) / (", 2 * a,") et x2 = (", -b,"+ i√(", -delta,") ) / (", 2 * a,")"
+    x1a = -b / (2 * a)
+    x1b = sqrt(-delta) / (2 * a)
+    x2a = -b / (2 * a)
+    x2b = sqrt(-delta) / (2 * a)
+    print "x1 =", x1a, "-", x1b,"* i et x2 = ", x2a, "+", x2b,"* i"
     sys.stdout.write(RESET)
 
 def delta_zero(a, b):
@@ -164,35 +153,32 @@ def handle_param(befExp, befNb, aftExp, aftNb):
             if bexp.find(".") == -1:
                 expNb = int(bexp)
                 if expNb > 10000:
-                    print "Problème d'exposants1"
+                    print "Problème d'exposants"
                     pb = 1
                 else:
                     exp.append(expNb)
             else:
                 if pb == 0:
-                    print "Problème d'exposants2"
+                    print "Problème d'exposants"
                     pb = 1
         for aexp in aftExp:
             if aexp.find(".") == -1:
                 expNb = int(aexp)
                 if expNb > 10000:
-                    print "Problème d'exposants3"
+                    print "Problème d'exposants"
                     pb = 1
                 else:
                     exp.append(expNb)
             else:
                 if pb == 0:
-                    print "Problème d'exposants4"
+                    print "Problème d'exposants"
                     pb = 1
         if pb == 0:
-            print "befNb", befNb
             for bnb in befNb:
                 nb.append(float(bnb))
             for anb in aftNb:
                 nb.append(-float(anb))
-            print "aftNb", aftNb
             if min(exp) >= 0:
-                print "exp", exp, "nb", nb
                 calc_by_degrees(exp, nb)
             else:
                 print "Programme ne gere pas les exposants negatifs"
@@ -210,11 +196,10 @@ def main(argv):
         aftExp = re.findall('(?<=\^)([+-]?\d\.?\d?)', aftEqu.group(0))
         befNb = re.findall('([+-]?\d+\.?\d*)(?=\s*\*)', befEqu.group(0))
         aftNb = re.findall('([+-]?\d+\.?\d*)(?=\s*\*)', aftEqu.group(0))
-        print "befNb", befNb, "befExp", befExp, "aftNb", aftNb, "aftExp", aftExp
         if len(befExp) == len(befNb) and len(aftExp) == len(aftNb):
             handle_param(befExp, befNb, aftExp, aftNb)
         else:
-            print "Problème d'exposants5"
+            print "Problème d'exposants"
     else:
         line = sys.stdin.readline()
         while line:
