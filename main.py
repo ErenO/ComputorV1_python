@@ -120,19 +120,16 @@ def calc_by_degrees(exp, nb):
     for exo in exp:
         tab[exo] += nb[i]
         i += 1
-    if (min(nb) != 0 and max(nb) != 0):
-        maxExp = reduced_form(tab, exp)
-    else:
-        print "Reduced form: 0 = 0"
+    maxExp = reduced_form(tab, exp)
     sys.stdout.write(GREEN)
     if isInt == 1:
         print "Le programme ne gère pas les exposants non entiers"
     elif maxExp == 0 and tab[0] == 0:
-        print "Tous les nombres réels sont solution"
+        print "Tous les nombres réels sont solutions"
     elif maxExp == 0 and tab[0] != 0:
         print "Équation impossible à résoudre"
     elif min(nb) == 0 and max(nb) == 0:
-        print "Tous les nombres réels sont solution"
+        print "Tous les nombres réels sont solutions"
     elif maxExp == 2 and tab[2] != 0:
         calc_second_degrees(tab[2], tab[1], tab[0])
     elif maxExp == 1 and tab[1] != 0:
@@ -204,13 +201,14 @@ def main(argv):
         line = sys.stdin.readline()
         while line:
             if len(line) > 0:
-                befEqu = re.search('(.)+(?=\=)', line)
-                aftEqu = re.search('(?<=\=)((.)+)', line)
+                equation = line.replace(" ", "")
+                befEqu = re.search('(.)+(?=\=)', equation)
+                aftEqu = re.search('(?<=\=)((.)+)', equation)
                 if befEqu and aftEqu:
                     befExp = re.findall('(?<=\^)([+-]?\d\.?\d?)', befEqu.group(0))
                     aftExp = re.findall('(?<=\^)([+-]?\d\.?\d?)', aftEqu.group(0))
-                    befNb = re.findall('([+-]?\d+\.?\d+)(?=\s*\*)', befEqu.group(0))
-                    aftNb = re.findall('([+-]?\d+\.?\d+)(?=\s*\*)', aftEqu.group(0))
+                    befNb = re.findall('([+-]?\d+\.?\d*)(?=\s*\*)', befEqu.group(0))
+                    aftNb = re.findall('([+-]?\d+\.?\d*)(?=\s*\*)', aftEqu.group(0))
                     if len(befExp) == len(befNb) and len(aftExp) == len(aftNb):
                         handle_param(befExp, befNb, aftExp, aftNb)
                     else:
